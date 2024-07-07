@@ -1,6 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Alert, TouchableOpacity } from 'react-native';
+import React,{useState} from 'react';
+import { View, Text, StyleSheet, FlatList, Image, Alert, TouchableOpacity,Modal } from 'react-native';
 import { Badge, Icon } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
+import ProductDetailsModal from '../../components/ProductDetailsModal';
+
 
 const products = [
   { id: '1', name: 'iPhone 15', price: '$1598.00', image: 'https://via.placeholder.com/150' },
@@ -12,9 +15,17 @@ const products = [
 ];
 
 const Home = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  
+  const navigation = useNavigation();
+
   const renderProduct = ({ item }) => (
     <TouchableOpacity onPress={()=>{
-      console.log(item.name);
+      // navigation.navigate('ProductDetails',{itemId:item.id});
+      setSelectedProduct(item);
+      setModalVisible(true);
+      
     }} style={styles.productContainer}>
       <Image source={{ uri: item.image }} style={styles.productImage} />
       <Text style={styles.productName}>{item.name}</Text>
@@ -24,6 +35,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
+      
       <View style={styles.header}>
         <Image
           source={{ uri: 'https://via.placeholder.com/50' }}
@@ -44,6 +56,13 @@ const Home = () => {
         numColumns={2}
         contentContainerStyle={styles.productList}
       />
+       {selectedProduct && (
+        <ProductDetailsModal
+          isVisible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          product={selectedProduct}
+        />
+      )}
     </View>
   );
 };
