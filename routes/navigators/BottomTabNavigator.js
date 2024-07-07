@@ -4,6 +4,7 @@ import { Icon } from 'react-native-elements';
 import Home from '../../screens/Home/Home';  // Adjust the path according to your file structure
 import CartScreen from '../../screens/Cart/CartScreen';  // Create this screen similarly
 import SearchScreen from '../../screens/Search/SearchScreen'; // Create this screen similarly
+import AppStack from '../AppStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,7 +30,7 @@ const BottomTabNavigator = () => {
         inactiveTintColor: 'gray',
       }}
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={AppStack} options={{headerShown:false}} />
       <Tab.Screen name="Search" component={SearchScreen} />
       
     </Tab.Navigator>

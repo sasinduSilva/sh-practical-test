@@ -10,6 +10,7 @@ import { dispatch } from "./app/store";
 import {TOKEN_KEY} from '@env';
 import AsyncStore from "./app/AsyncStore";
 import UserService from "./services/UserService";
+import BottomTabNavigator from "./routes/navigators/BottomTabNavigator";
 
 const AppContent = () => {
 
@@ -49,7 +50,7 @@ const AppContent = () => {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? <AppStack /> : <AuthStack />}
+      {isLoggedIn ? <BottomTabNavigator /> : <AuthStack />}
       
     </NavigationContainer>
   )

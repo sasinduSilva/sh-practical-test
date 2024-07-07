@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, Alert, TouchableOpacity } from 'react-native';
 import { Badge, Icon } from 'react-native-elements';
 
 const products = [
@@ -13,11 +13,13 @@ const products = [
 
 const Home = () => {
   const renderProduct = ({ item }) => (
-    <View style={styles.productContainer}>
+    <TouchableOpacity onPress={()=>{
+      console.log(item.name);
+    }} style={styles.productContainer}>
       <Image source={{ uri: item.image }} style={styles.productImage} />
       <Text style={styles.productName}>{item.name}</Text>
       <Text style={styles.productPrice}>{item.price}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
