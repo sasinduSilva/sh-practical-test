@@ -36,7 +36,9 @@ const Home = () => {
   return (
     <View style={styles.container}>
       
-      <View style={styles.header}>
+      <TouchableOpacity onPress={()=>{
+        navigation.navigate('UserProfile');
+      }} style={styles.header}>
         <Image
           source={{ uri: 'https://via.placeholder.com/50' }}
           style={styles.profileImage}
@@ -47,7 +49,7 @@ const Home = () => {
           <Icon name="shopping-cart" size={30} />
           <Badge value="2" status="error" containerStyle={styles.cartBadge} />
         </View>
-      </View>
+      </TouchableOpacity>
       <Text style={styles.sectionTitle}>What's New</Text>
       <FlatList
         data={products}
