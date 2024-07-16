@@ -35,3 +35,12 @@ export const getUSer = ({ token,path }) => {
     },
   });
 };
+
+// export const getById = ({id,path}) =>{
+//   return fetch(`${EXPO_PUBLIC_API_URL}${path}`, {
+//     method: "GET",
+//     headers: {
+//       "Authorization": "Bearer "+token,
+//     },
+//   });
+// }

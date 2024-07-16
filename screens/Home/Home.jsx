@@ -1,22 +1,38 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Alert, TouchableOpacity,Modal } from 'react-native';
 import { Badge, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import ProductDetailsModal from '../../components/ProductDetailsModal';
+import { Provider, useSelector } from "react-redux";
+import ProductService from "../../services/ProductService";
 
 
-const products = [
-  { id: '1', name: 'iPhone 15', price: '$1598.00', image: 'https://via.placeholder.com/150' },
-  { id: '2', name: 'iPhone 14', price: '$1598.00', image: 'https://via.placeholder.com/150' },
-  { id: '3', name: 'iPhone 15 Pro', price: '$1598.00', image: 'https://via.placeholder.com/150' },
-  { id: '4', name: 'iPhone 15 Pro Max', price: '$1598.00', image: 'https://via.placeholder.com/150' },
-  { id: '5', name: 'iPhone 14 Pro', price: '$1598.00', image: 'https://via.placeholder.com/150' },
-  { id: '6', name: 'iPhone 15 Pro Max', price: '$1598.00', image: 'https://via.placeholder.com/150' },
-];
+
 
 const Home = () => {
+
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const userImage = useSelector((state) => state.user.image);
+
+  
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [allProducts,setAllProducts] = useState();
+  
+
+  useEffect(()=>{
+    getAllProducts();
+    
+
+  },[]);
+
+  const getAllProducts = async ()=>{
+    const products = await ProductService.getAllProducts();
+    if(products){
+      setAllProducts(products.products);
+    }
+  }
   
   const navigation = useNavigation();
 
@@ -27,8 +43,8 @@ const Home = () => {
       setModalVisible(true);
       
     }} style={styles.productContainer}>
-      <Image source={{ uri: item.image }} style={styles.productImage} />
-      <Text style={styles.productName}>{item.name}</Text>
+      <Image source={{ uri: item.thumbnail }} style={styles.productImage} />
+      <Text style={styles.productName}>{item.title}</Text>
       <Text style={styles.productPrice}>{item.price}</Text>
     </TouchableOpacity>
   );
@@ -40,7 +56,7 @@ const Home = () => {
         navigation.navigate('UserProfile');
       }} style={styles.header}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/50' }}
+          source={{ uri: userImage }}
           style={styles.profileImage}
         />
         <Text style={styles.greeting}>Good Morning</Text>
@@ -52,7 +68,7 @@ const Home = () => {
       </TouchableOpacity>
       <Text style={styles.sectionTitle}>What's New</Text>
       <FlatList
-        data={products}
+        data={allProducts}
         renderItem={renderProduct}
         keyExtractor={item => item.id}
         numColumns={2}

@@ -6,11 +6,13 @@ import { StyleSheet,
   } from 'react-native'
 import React,{useEffect,useState} from 'react'
 import { dispatch } from "../../app/store";
-import { login } from "../../reducers/userSlice";
+import { login,setUser } from "../../reducers/userSlice";
 import UserService from "../../services/UserService";
 import  Ionicons  from 'react-native-vector-icons/Ionicons';
 import {TOKEN_KEY} from '@env';
 import AsyncStore from '../../app/AsyncStore';
+import { Provider, useSelector } from "react-redux";
+
 
 
 
@@ -18,6 +20,44 @@ import AsyncStore from '../../app/AsyncStore';
 const Login = ({navigation}) =>{
  const [email, setEmail] = useState("");
  const [password, setPassword] = useState("");
+
+ const setUserFunc = async (userTkn) =>{
+    if(userTkn){
+      try {
+        const loggedInUser = await UserService.getUserByToken({
+          token:userTkn
+        });
+        
+
+        if(loggedInUser){
+          dispatch(
+            setUser({
+              
+              id : loggedInUser.id,
+              email : loggedInUser.email,
+              firstName : loggedInUser.firstName,
+              lastName : loggedInUser.lastName,
+              gender : loggedInUser.gender,
+              image : loggedInUser.image,
+              contact : loggedInUser.phone,
+              designation : loggedInUser.company.title,
+              office : loggedInUser.company.name,
+              university : loggedInUser.university
+              
+          })
+          );
+    
+          
+        }else{
+          Alert("User not found, please login");
+          return;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+ }
+ 
 
 
  const handleLogin = async () =>{
@@ -28,17 +68,20 @@ const Login = ({navigation}) =>{
              password:password,
          });
          console.log("loginResult");
-         console.log(loginResult);
+         console.log(loginResult.firstName);
 
          if(loginResult?.token){
-             dispatch(
-                 login({
-                     isLoggedIn: true,
-                     ...loginResult,
-                 })
-             );
+            dispatch(
+              login({
+                  isLoggedIn: true,
+                  token : loginResult.token,
+                  refreshToken : loginResult.refreshToken
+              })
+            );
+          
 
-             await AsyncStore.saveItem(JSON.stringify(TOKEN_KEY),loginResult.token);
+        await AsyncStore.saveItem(JSON.stringify(TOKEN_KEY),loginResult.token);
+        await setUserFunc(loginResult.token);
          }else{
              alert("login failled");
          }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from 'expo-status-bar';
 import { Alert, StyleSheet, Text, View } from 'react-native';
@@ -13,14 +13,17 @@ import UserService from "./services/UserService";
 import BottomTabNavigator from "./routes/navigators/BottomTabNavigator";
 
 const AppContent = () => {
+  
 
   useEffect(()=>{
     handleGetUser();
   },[]);
 
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
+  const refreshToken = useSelector((state) => state.user.refreshToken);
 
   const handleGetUser = async () =>{
+    
     const userToken = await AsyncStore.getItem(JSON.stringify(TOKEN_KEY));
   
     if(userToken){
@@ -33,8 +36,19 @@ const AppContent = () => {
         dispatch(
           login({
             isLoggedIn: true,
-            ...loggedInUser,
-          })
+            id : loggedInUser.id,
+            email : loggedInUser.email,
+            firstName : loggedInUser.firstName,
+            lastName : loggedInUser.lastName,
+            gender : loggedInUser.gender,
+            image : loggedInUser.image,
+            contact : loggedInUser.phone,
+            designation : loggedInUser.company.title,
+            office : loggedInUser.company.name,
+            university : loggedInUser.university,
+            token : userToken,
+            refreshToken : refreshToken
+        })
         );
   
         
